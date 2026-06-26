@@ -35,5 +35,39 @@ class MaterialController extends Controller
         }
     }
 
+    public function update(Request $request, int $codigo): JsonResponse
+    {
+        $material = Material::find($codigo);
+
+        if (!$material) {
+            return response()->json([
+                'message' => 'Material no encontrado.',
+            ], 404);
+        }
+
+        try {
+            $validated = $request->validate([
+                'unidadMedida' => 'sometimes|string|max:255',
+                'descripcion'  => 'sometimes|string|max:255',
+                'ubicacion'    => 'sometimes|string|max:255',
+                'idCategoria'  => 'sometimes|integer|exists:categorias,idCategoria',
+            ]);
+
+            $material->update($validated);
+
+            return response()->json([
+                'message'  => 'Material actualizado exitosamente.',
+                'material' => $material->load('categoria'),
+            ], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors'  => $e->errors(),
+            ], 422);
+        }
+    }
+
+
 
 }
