@@ -18,6 +18,30 @@ class MaterialControllerTest extends TestCase
 
     // ─── store ───────────────────────────────────────────────────────────────
 
+    public function dadoUnMaterialQueNoExiste_insertarMaterial_funcionaCorrectamente(): void
+    {
+        $categoria = $this->crearCategoria();
+
+        $response = $this->postJson('/api/materiales', [
+            'unidadMedida' => 'kg',
+            'descripcion'  => 'Cemento Portland',
+            'ubicacion'    => 'Bodega A',
+            'idCategoria'  => $categoria->idCategoria,
+        ]);
+
+        $response->assertStatus(201)
+                 ->assertJsonFragment(['message' => 'Material creado exitosamente.'])
+                 ->assertJsonStructure([
+                     'message',
+                     'material' => ['codigo', 'unidadMedida', 'descripcion', 'ubicacion', 'idCategoria', 'categoria'],
+                 ]);
+
+        $this->assertDatabaseHas('materiales', [
+            'descripcion' => 'Cemento Portland',
+            'ubicacion'   => 'Bodega A',
+        ]);
+    }
+
     public function test_store_crea_material_exitosamente(): void
     {
         $categoria = $this->crearCategoria();
