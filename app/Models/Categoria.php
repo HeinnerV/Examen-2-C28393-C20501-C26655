@@ -3,28 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Material extends Model
+class Categoria extends Model
 {
-    protected $table = 'materiales';
+    protected $table = 'categorias';
 
     protected $fillable = [
-        'codigo',
-        'unidadMedida',
-        'descripcion',
-        'ubicacion',
-        'idCategoria',
+        'nombre',
     ];
 
-    public function categoria(): BelongsTo
+    public function materiales(): HasMany
     {
-        return $this->belongsTo(Categoria::class, 'idCategoria', 'idCategoria');
-    }
-
-    public function materialUnidades(): HasMany
-    {
-        return $this->hasMany(MaterialUnidad::class, 'codigo', 'codigo');
+        return $this->hasMany(Material::class, 'idCategoria', 'idCategoria');
     }
 }
