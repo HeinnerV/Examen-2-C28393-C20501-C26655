@@ -10,6 +10,8 @@ class Material extends Model
 {
     protected $table = 'materiales';
 
+    protected $primaryKey = 'codigo';
+
     protected $fillable = [
         'codigo',
         'unidadMedida',
